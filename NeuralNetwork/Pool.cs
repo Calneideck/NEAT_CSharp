@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 
 namespace NeuralNetwork
@@ -198,6 +199,78 @@ namespace NeuralNetwork
         public static float Sigmoid(float x)
         {
             return 2 / (1 + (float)Math.Exp(-4.9f * x)) - 1;
+        }
+
+        public static void Save()
+        {
+            BinaryWriter writer = new BinaryWriter(File.Open("pool.dat", FileMode.Create));
+            writer.Write(generation);
+            writer.Write(maxFitness);
+            writer.Write(species.Count);
+            foreach (Species s in species)
+            {
+                writer.Write(s.TopFitness);
+                writer.Write(s.Staleness);
+                writer.Write(s.Genomes.Count);
+                foreach (Genome g in s.Genomes)
+                {
+                    writer.Write(g.Fitness);
+                    writer.Write(g.MaxNeuron);
+                    foreach (KeyValuePair<string, float> kv in g.MutationRates)
+                    {
+                        writer.Write(kv.Key);
+                        writer.Write(kv.Value);
+                    }
+                    writer.Write(g.Genes.Count);
+                    foreach (Gene gene in g.Genes)
+                    {
+                        writer.Write(gene.input);
+                        writer.Write(gene.output);
+                        writer.Write(gene.weight);
+                        writer.Write(gene.innovation);
+                        writer.Write(gene.enabled);
+                    }
+                }
+            }
+            writer.Close();
+        }
+
+        public static void Load()
+        {
+            BinaryReader reader = new BinaryReader(File.Open("pool.dat", FileMode.Open));
+            species.Clear();
+            generation = reader.ReadInt32();
+            maxFitness = reader.ReadSingle();
+            int speciesCount = reader.ReadInt32();
+            for (int i = 0; i < speciesCount; i++)
+            {
+                Species s = new Species();
+                s.TopFitness = reader.ReadSingle();
+                s.Staleness = reader.ReadInt32();
+                int genomeCount = reader.ReadInt32();
+                for (int j = 0; j < genomeCount; j++)
+                {
+                    Genome g = new Genome();
+                    s.Genomes.Add(g);
+                    g.Fitness = reader.ReadSingle();
+                    g.MaxNeuron = reader.ReadInt32();
+                    for (int k = 0; k < 7; k++)
+                        g.MutationRates[reader.ReadString()] = reader.ReadSingle();
+
+                    int geneCount = reader.ReadInt32();
+                    for (int l = 0; l < geneCount; l++)
+                    {
+                        Gene gene = new Gene();
+                        g.Genes.Add(gene);
+                        gene.input = reader.ReadInt32();
+                        gene.output = reader.ReadInt32();
+                        gene.weight = reader.ReadSingle();
+                        gene.innovation = reader.ReadInt32();
+                        gene.enabled = reader.ReadBoolean();
+                    }
+                }
+            }
+            reader.Close();
         }
 
         public static int Inputs

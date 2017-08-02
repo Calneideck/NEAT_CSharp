@@ -8,7 +8,7 @@ namespace NeuralNetwork
         const float CrossoverChance = 0.75f;
 
         private float topFitness = 0;
-        private float staleness = 0;
+        private int staleness = 0;
         private List<Genome> genomes = new List<Genome>();
 
         public List<Genome> Genomes
@@ -52,7 +52,7 @@ namespace NeuralNetwork
             set { topFitness = value; }
         }
 
-        public float Staleness
+        public int Staleness
         {
             get { return staleness; }
             set { staleness = value; }

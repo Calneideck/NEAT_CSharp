@@ -309,6 +309,17 @@ namespace NeuralNetwork
             set { globalRank = value; }
         }
 
+        public int MaxNeuron
+        {
+            get { return maxNeuron; }
+            set { maxNeuron = value; }
+        }
+
+        public Dictionary<string, float> MutationRates
+        {
+            get { return mutationRates; }
+        }
+
         public List<Gene> Genes
         {
             get { return genes; }
