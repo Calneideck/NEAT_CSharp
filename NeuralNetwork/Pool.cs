@@ -214,7 +214,6 @@ namespace NeuralNetwork
                 writer.Write(s.Genomes.Count);
                 foreach (Genome g in s.Genomes)
                 {
-                    writer.Write(g.Fitness);
                     writer.Write(g.MaxNeuron);
                     foreach (KeyValuePair<string, float> kv in g.MutationRates)
                     {
@@ -237,6 +236,9 @@ namespace NeuralNetwork
 
         public static void Load()
         {
+            if (!File.Exists("pool.dat"))
+                return;
+
             BinaryReader reader = new BinaryReader(File.Open("pool.dat", FileMode.Open));
             species.Clear();
             generation = reader.ReadInt32();
@@ -245,6 +247,7 @@ namespace NeuralNetwork
             for (int i = 0; i < speciesCount; i++)
             {
                 Species s = new Species();
+                species.Add(s);
                 s.TopFitness = reader.ReadSingle();
                 s.Staleness = reader.ReadInt32();
                 int genomeCount = reader.ReadInt32();
@@ -252,7 +255,6 @@ namespace NeuralNetwork
                 {
                     Genome g = new Genome();
                     s.Genomes.Add(g);
-                    g.Fitness = reader.ReadSingle();
                     g.MaxNeuron = reader.ReadInt32();
                     for (int k = 0; k < 7; k++)
                         g.MutationRates[reader.ReadString()] = reader.ReadSingle();
