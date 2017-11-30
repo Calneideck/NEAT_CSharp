@@ -206,6 +206,7 @@ namespace NeuralNetwork
             BinaryWriter writer = new BinaryWriter(File.Open("pool.dat", FileMode.Create));
             writer.Write(generation);
             writer.Write(maxFitness);
+            writer.Write(innovation);
             writer.Write(species.Count);
             foreach (Species s in species)
             {
@@ -243,6 +244,7 @@ namespace NeuralNetwork
             species.Clear();
             generation = reader.ReadInt32();
             maxFitness = reader.ReadSingle();
+            innovation = reader.ReadInt32();
             int speciesCount = reader.ReadInt32();
             for (int i = 0; i < speciesCount; i++)
             {
@@ -270,6 +272,7 @@ namespace NeuralNetwork
                         gene.innovation = reader.ReadInt32();
                         gene.enabled = reader.ReadBoolean();
                     }
+                    g.GenerateNetwork();
                 }
             }
             reader.Close();
